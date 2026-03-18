@@ -492,18 +492,6 @@ button {
   background-color: #f8fafc50;
 }
 
-@media (max-width: 640px) {
-  .nav-links {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-  }
-
-  .nav-item {
-    white-space: nowrap;
-  }
-}
-
 /* Print Styles for Official Document */
 @media print {
   body {
