@@ -18,7 +18,8 @@ import {
   Camera,
   Mic,
   FileText,
-  X
+  X,
+  Menu
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -30,6 +31,7 @@ type Tab = 'new' | 'screening' | 'history' | 'settings';
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('new');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -182,38 +184,60 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
+      {/* Mobile Header Menu */}
+      <div className="mobile-header">
         <div className="logo">
           <ClipboardCheck size={28} />
           <span>Apoteker AI</span>
+        </div>
+        <button className="btn-outline" style={{ padding: '0.4rem', border: 'none' }} onClick={() => setIsMobileMenuOpen(true)}>
+          <Menu size={24} />
+        </button>
+      </div>
+
+      {/* Mobile Drawer Overlay */}
+      <div 
+        className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`} 
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Sidebar */}
+      <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+        <div className="logo" style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--primary)', fontWeight: 700 }}>
+            <ClipboardCheck size={28} />
+            <span>Apoteker AI</span>
+          </div>
+          <button className="mobile-close-btn" style={{ background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setIsMobileMenuOpen(false)}>
+            <X size={24} color="var(--text-light)" />
+          </button>
         </div>
 
         <nav className="nav-links">
           <a
             className={`nav-item ${activeTab === 'new' ? 'active' : ''}`}
-            onClick={() => setActiveTab('new')}
+            onClick={() => { setActiveTab('new'); setIsMobileMenuOpen(false); }}
           >
             <Plus size={20} />
             Asuhan Kefarmasian
           </a>
           <a
             className={`nav-item ${activeTab === 'screening' ? 'active' : ''}`}
-            onClick={() => setActiveTab('screening')}
+            onClick={() => { setActiveTab('screening'); setIsMobileMenuOpen(false); }}
           >
             <FileSearch size={20} />
             Skrining Resep
           </a>
           <a
             className={`nav-item ${activeTab === 'history' ? 'active' : ''}`}
-            onClick={() => setActiveTab('history')}
+            onClick={() => { setActiveTab('history'); setIsMobileMenuOpen(false); }}
           >
             <History size={20} />
             Riwayat SOAP
           </a>
           <a
             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
+            onClick={() => { setActiveTab('settings'); setIsMobileMenuOpen(false); }}
           >
             <Settings size={20} />
             Pengaturan
