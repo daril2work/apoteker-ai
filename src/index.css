@@ -655,3 +655,220 @@ button {
     margin: 2cm;
   }
 }
+
+/* Standardized Modal UI System */
+.legal-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.legal-modal-content {
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  background: var(--card);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: scale(0.95);
+  opacity: 0;
+  animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalIn {
+  to { transform: scale(1); opacity: 1; }
+}
+
+.legal-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+}
+
+.legal-modal-header h2 {
+  margin: 0 !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+}
+
+.modal-title-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.legal-modal-body {
+  padding: 2.5rem 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.legal-modal-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+/* Modal Content Elements */
+.legal-section {
+  margin-bottom: 3rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.section-header h3 {
+  margin: 0 !important;
+  font-size: 1.15rem !important;
+  color: var(--text) !important;
+}
+
+.section-content h4 {
+  margin: 1.5rem 0 0.75rem !important;
+  color: var(--text) !important;
+  font-size: 1.05rem !important;
+}
+
+.section-content p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: var(--text-light);
+  text-align: justify;
+}
+
+.legal-info-banner {
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  color: #0f766e;
+  padding: 1.25rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 2.5rem;
+}
+
+.legal-toc {
+  background: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+}
+
+.legal-toc h3 {
+  margin: 0 0 1rem 0 !important;
+  font-size: 1rem !important;
+}
+
+.legal-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.legal-toc a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.legal-toc a:hover {
+  text-decoration: underline;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: #f1f5f9;
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .legal-modal-content {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .legal-modal-overlay {
+    padding: 0;
+  }
+  .legal-modal-header {
+    padding: 1rem 1.5rem;
+  }
+  .legal-modal-body {
+    padding: 1.5rem;
+  }
+}
+
+/* Animated Sage Background for Hero */
+.hero-animated-bg {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(-45deg, #ffffff, #f0fdfa, #f8fafc, #ffffff);
+  background-size: 200% 200%;
+  animation: gradientMove 7s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-animated-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 250%; height: 250%;
+  background: radial-gradient(circle, rgba(13, 148, 136, 0.05) 0%, transparent 65%);
+  animation: rotateBg 15s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes rotateBg {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

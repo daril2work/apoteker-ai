@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePharmacyStore } from '../store/usePharmacyStore';
+import LegalDocs from './LegalDocs';
+import AboutUs from './AboutUs';
 
 
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = usePharmacyStore();
+  const [activeLegalSection, setActiveLegalSection] = useState<string | null>(null);
+  const [showAboutUs, setShowAboutUs] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -98,7 +102,13 @@ const LandingPage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <header className="relative pt-32 pb-20 overflow-hidden">
+      <header className="relative pt-32 pb-12 overflow-hidden hero-animated-bg">
+        {/* Abstract Blobs (Antigravity Style) */}
+        <div className="blob-container">
+          <div className="blob blob-1"></div>
+          <div className="blob blob-2"></div>
+          <div className="blob blob-3"></div>
+        </div>
         <div className="max-w-7xl mx-auto px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 z-10">
@@ -144,7 +154,7 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* App Mockup Section (Asymmetric Editorial Style) */}
-      <section className="py-24 bg-surface-container-low overflow-hidden">
+      <section className="pt-12 pb-24 bg-surface-container-low overflow-hidden">
         <div className="max-w-7xl mx-auto px-8">
           <div className="flex flex-col lg:flex-row gap-16 items-start">
             <div className="w-full lg:w-1/3 sticky top-32 reveal-on-scroll">
@@ -375,7 +385,17 @@ const LandingPage: React.FC = () => {
                 Rekomendasi Apoteker
               </div>
               <h3 className="text-xl font-bold font-headline mb-4">Edisi Pro</h3>
-              <div className="text-4xl font-extrabold mb-8">Rp 10.000<span className="text-lg opacity-80 font-medium">/bulan</span></div>
+              <div className="flex flex-col mb-8">
+                <span className="text-sm opacity-70 line-through mb-1">Rp 99.999</span>
+                <div className="text-4xl font-extrabold flex items-baseline gap-1">
+                  Rp 49.999<span className="text-lg opacity-80 font-medium">/bulan</span>
+                </div>
+                <div className="mt-2">
+                    <span className="inline-block text-[10px] bg-yellow-300 text-teal-900 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                        Promo (Beta Version)
+                    </span>
+                </div>
+              </div>
               <ul className="space-y-4 mb-10">
                 <li className="flex items-center gap-3 text-sm font-medium"><span className="material-symbols-outlined">check</span> Analisis Asuhan Tanpa Batas</li>
                 <li className="flex items-center gap-3 text-sm font-medium"><span className="material-symbols-outlined">check</span> AI Vision (Upload Foto Resep)</li>
@@ -422,16 +442,24 @@ const LandingPage: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-xs uppercase tracking-widest text-teal-700 dark:text-teal-400 mb-6">Kebijakan</h4>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-2 bg-white rounded shadow-sm flex items-center justify-center">
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
-              </div>
-              <span className="text-xs text-slate-500 font-bold tracking-widest">Aman & Terenkripsi</span>
-            </div>
+            <h4 className="font-bold text-xs uppercase tracking-widest text-teal-700 dark:text-teal-400 mb-6">Kebijakan & Dukungan</h4>
+            <ul className="space-y-4 text-sm font-body mb-6">
+              <li><button onClick={() => setShowAboutUs(true)} className="text-slate-500 hover:text-teal-500 transition-colors bg-none border-none p-0 cursor-pointer text-left">Tentang Kami</button></li>
+              <li><a href="https://wa.me/628170419935" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-teal-500 transition-colors flex items-center gap-2">Hubungi Admin (WA)</a></li>
+              <li><button onClick={() => setActiveLegalSection('terms-conditions')} className="text-slate-500 hover:text-teal-500 transition-colors bg-none border-none p-0 cursor-pointer text-left">Syarat & Ketentuan</button></li>
+              <li><button onClick={() => setActiveLegalSection('privacy-policy')} className="text-slate-500 hover:text-teal-500 transition-colors bg-none border-none p-0 cursor-pointer text-left">Kebijakan Privasi</button></li>
+            </ul>
             <p className="text-xs text-slate-400">© 2026 FarmasiKu - Asisten Farmasi Klinik Indonesia.</p>
           </div>
         </div>
+
+        {activeLegalSection && (
+          <LegalDocs 
+            initialSection={activeLegalSection} 
+            onClose={() => setActiveLegalSection(null)} 
+          />
+        )}
+        {showAboutUs && <AboutUs onClose={() => setShowAboutUs(false)} />}
       </footer>
     </div>
   );

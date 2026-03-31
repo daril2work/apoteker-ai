@@ -1173,7 +1173,7 @@ function MainApp() {
                                 <li>✓ Dukungan Prioritas & Update Database Obat Terbaru.</li>
                             </ul>
                             <button className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: '1.5rem' }} onClick={() => setShowUpgradeModal(true)}>
-                                Upgrade Sekarang (Rp 79.000 / Bulan)
+                                Upgrade Sekarang (Promo Beta: Rp 49.999 / Bulan)
                             </button>
                         </div>
                     )}
@@ -1284,7 +1284,7 @@ function MainApp() {
                 <h3>Batas Penggunaan Tercapai</h3>
                 <p className="text-light" style={{ margin: '1rem 0' }}>Anda telah mencapai batas 15 dokumen skrining & Care Plan untuk penggunaan Gratis bulan ini.</p>
                 <div style={{ backgroundColor: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', border: '1px solid #e2e8f0' }}>
-                    <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Upgrade ke Pro (Rp 79.000)</h4>
+                    <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem' }}>Upgrade ke Pro (Promo: Rp 49.999)</h4>
                     <ul style={{ textAlign: 'left', fontSize: '0.85rem', color: '#475569', margin: '0 0 0 1rem', padding: 0 }}>
                         <li>✓ Skrining AI Tanpa Batas (Unlimited)</li>
                         <li>✓ Kemampuan Export PDF Laporan</li>
@@ -1293,7 +1293,7 @@ function MainApp() {
                     </ul>
                 </div>
                 <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} disabled={loading} onClick={handlePayment}>
-                    {loading ? <Loader2 className="animate-spin" size={18} /> : 'Upgrade Sekarang (Rp 79.000)'}
+                    {loading ? <Loader2 className="animate-spin" size={18} /> : 'Upgrade Sekarang (Rp 49.999)'}
                 </button>
             </div>
         </div>

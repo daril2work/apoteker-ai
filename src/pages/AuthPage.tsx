@@ -3,6 +3,7 @@ import { supabase } from '../services/supabase';
 import { ClipboardCheck, Loader2, MailCheck, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import LegalDocs from '../components/LegalDocs';
+import AboutUs from '../components/AboutUs';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -16,7 +17,8 @@ const AuthPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [isEmailSent, setIsEmailSent] = useState(false);
     
-    const [showLegalDocs, setShowLegalDocs] = useState(false);
+    const [activeLegalSection, setActiveLegalSection] = useState<string | null>(null);
+    const [showAboutUs, setShowAboutUs] = useState(false);
     const [agreedToLegal, setAgreedToLegal] = useState(false);
 
     const navigate = useNavigate();
@@ -203,7 +205,7 @@ const AuthPage = () => {
                                             />
                                             <span className="checkbox-custom"></span>
                                             <span className="checkbox-label">
-                                                Saya menyetujui seluruh <button type="button" className="link-btn" onClick={() => setShowLegalDocs(true)}>Dokumen Legal FarmasiKu</button>
+                                                Saya menyetujui seluruh <button type="button" className="link-btn" onClick={() => setActiveLegalSection('clinical-disclaimer')}>Dokumen Legal</button> & <button type="button" className="link-btn" onClick={() => setShowAboutUs(true)}>Tentang Kami</button>
                                             </span>
                                         </label>
                                     </div>
@@ -246,8 +248,15 @@ const AuthPage = () => {
                 </div>
             </div>
 
-            {showLegalDocs && (
-                <LegalDocs onClose={() => setShowLegalDocs(false)} />
+            {activeLegalSection && (
+                <LegalDocs 
+                    initialSection={activeLegalSection} 
+                    onClose={() => setActiveLegalSection(null)} 
+                />
+            )}
+
+            {showAboutUs && (
+                <AboutUs onClose={() => setShowAboutUs(false)} />
             )}
             
             <style>{`
