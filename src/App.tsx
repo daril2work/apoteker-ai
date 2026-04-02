@@ -688,21 +688,84 @@ function MainApp() {
                   <h2 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Alur Skrining Resep</h2>
 
                   <div className="upload-grid">
-                    <label className="upload-card">
-                      <Camera size={32} />
-                      <span>Foto Resep</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const resized = await resizeImage(file);
-                            setScreeningImage(resized);
-                          }
-                        }}
-                      />
-                    </label>
+                    <div className="upload-card" style={{ cursor: 'default' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-light)' }}>
+                          <Camera size={24} />
+                          <span style={{ fontWeight: 600 }}>Foto Resep</span>
+                        </div>
+                        
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', justifyContent: 'center', width: '100%', flexWrap: 'nowrap' }}>
+                          {/* Standard File Input for Gallery */}
+                          <div style={{ flex: '1', minWidth: 0 }}>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const resized = await resizeImage(file);
+                                  setScreeningImage(resized);
+                                }
+                              }}
+                              ref={(el) => {
+                                if (el) {
+                                  el.style.setProperty('width', '100%', 'important');
+                                  el.style.setProperty('margin', '0', 'important');
+                                }
+                              }}
+                              style={{ 
+                                fontSize: '0.875rem'
+                              }}
+                            />
+                          </div>
+
+                          {/* Camera Icon Trigger */}
+                          <label 
+                            htmlFor="camera-capture-input"
+                            style={{ 
+                              cursor: 'pointer', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center',
+                              padding: '0.75rem',
+                              borderRadius: '12px',
+                              border: '1px solid var(--border)',
+                              background: '#ffffff',
+                              color: 'var(--primary)',
+                              transition: 'all 0.2s',
+                              flexShrink: 0,
+                              boxShadow: 'var(--shadow-sm)'
+                            }}
+                            title="Ambil Foto Langsung"
+                          >
+                            <Camera size={24} />
+                          </label>
+                          <input
+                            id="camera-capture-input"
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const resized = await resizeImage(file);
+                                setScreeningImage(resized);
+                              }
+                            }}
+                            ref={(el) => { 
+                              if (el) {
+                                el.style.setProperty('display', 'none', 'important'); 
+                                el.style.setProperty('visibility', 'hidden', 'important');
+                                el.style.setProperty('position', 'absolute', 'important');
+                                el.style.setProperty('width', '0', 'important');
+                                el.style.setProperty('height', '0', 'important');
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                      <button 
                       type="button" 
                       className={`upload-card ${isListening ? 'listening' : ''}`}
@@ -711,7 +774,7 @@ function MainApp() {
                     >
                       <Mic size={32} color={isListening ? 'var(--danger)' : 'currentColor'} />
                       <span>{isListening ? 'Mendengarkan...' : 'Input Suara'}</span>
-                      <p style={{ fontSize: '0.75rem' }}>Klik & Bicara</p>
+                      <p style={{ fontSize: '0.75rem', margin: 0 }}>Klik & Bicara</p>
                     </button>
                   </div>
 
