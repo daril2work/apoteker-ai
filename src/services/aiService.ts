@@ -22,7 +22,7 @@ export const analyzeConsultation = async (
 ) => {
   const openai = getOpenAIClient(config);
   const stream = await openai.chat.completions.create({
-    model: 'gemini/gemini-2.5-pro',
+    model: 'gemini/gemini-2.5-flash',
     messages: [
       {
         role: 'system',
@@ -39,10 +39,10 @@ export const analyzeConsultation = async (
         STANDAR EBM WAJIB:
         - Layer 1 (Nasional): PMK 74/2016, KMK PPK FKTP 2022, Fornas.
         - Layer 2 (Spesifik): GINA, GOLD, ADA/PERKENI, AHA/ACC/ESC, IDSA, KDIGO.
-        - Layer 3 (Farmakoterapi): DiPiro (Pharmacotherapy: A Pathophysiologic Approach), Koda-Kimble (Applied Therapeutics), Stockley (Interaksi).
-        - Layer 4 (Evidence Terbaru): High-Impact Journals (NEJM, Lancet, BMJ, JAMA, Cochrane).
-
-        PENTING: Jangan gabungkan bagian CPPT dengan bagian lain. Bagian "### 6. CPPT" harus selalu ada dan berisi rangkuman singkat (S, O, A, P) siap salin untuk rekam medis. Gunakan gaya medis profesional.`
+        PENTING: 
+        1. Jangan gabungkan bagian CPPT dengan bagian lain. Bagian "### 6. CPPT" harus selalu ada dan berisi rangkuman sangat singkat untuk rekam medis.
+        2. TULIS DENGAN SANGAT SINGKAT, PADAT, DAN MENGGUNAKAN BULLET POINTS. Hindari paragraf panjang.
+        3. BATASI SETIAP POIN MAKSIMAL 2 KALIMAT. TOTAL RESPON KESELURUHAN TIDAK BOLEH LEBIH DARI 300 KATA agar tidak terjadi server timeout.`
       },
       {
         role: 'user',
@@ -82,7 +82,7 @@ export const analyzePrescription = async (
   });
 
   const stream = await openai.chat.completions.create({
-    model: 'gemini/gemini-2.5-pro',
+    model: 'gemini/gemini-2.5-flash',
     messages: [
       {
         role: 'system',
