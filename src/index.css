@@ -327,34 +327,40 @@ textarea:focus {
 
 
 button {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  box-sizing: border-box !important;
 }
 
 .btn-primary {
-  background-color: var(--primary);
-  color: white;
+  background-color: var(--primary) !important;
+  color: white !important;
+  border: 1px solid var(--primary) !important;
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
 }
 
 .btn-outline {
-  background-color: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
+  background-color: transparent !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
 }
 
 .btn-outline:hover {
-  background-color: var(--bg);
+  background-color: var(--bg) !important;
 }
 
 /* Results Content */

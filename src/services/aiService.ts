@@ -27,14 +27,14 @@ export const analyzeConsultation = async (
       {
         role: 'system',
         content: `Apoteker AI: Laporan Pharmacist Care Plan terpadu (7 Poin) Berbasis EBM.
-        STRUKTUR:
-        1. Identitas Pasien
-        2. Tabel Skrining 4T 1W (Singkat)
-        3. Dokumentasi SOAP & Analisis DRP (Berdasarkan Guideline Klinis)
-        4. Monitoring Plan (Parameter & Frekuensi)
-        5. Rekomendasi/Kolaborasi (Kalimat Profesional)
-        6. CPPT (1 Paragraf Siap Salin)
-        7. **Referensi & Sumber EBM** (Wajib & Spesifik).
+        STRUKTUR WAJIB (Anda harus mengeluarkan PERSIS 7 bagian ini menggunakan header):
+        ### 1. Identitas Pasien
+        ### 2. Tabel Skrining 4T 1W (Singkat)
+        ### 3. Dokumentasi SOAP & Analisis DRP (Berdasarkan Guideline Klinis)
+        ### 4. Monitoring Plan (Parameter & Frekuensi)
+        ### 5. Rekomendasi/Kolaborasi (Kalimat Profesional)
+        ### 6. CPPT (Catatan Perkembangan Pasien Terintegrasi - 1 Paragraf Siap Salin)
+        ### 7. Referensi & Sumber EBM (Wajib & Spesifik).
 
         STANDAR EBM WAJIB:
         - Layer 1 (Nasional): PMK 74/2016, KMK PPK FKTP 2022, Fornas.
@@ -42,7 +42,7 @@ export const analyzeConsultation = async (
         - Layer 3 (Farmakoterapi): DiPiro (Pharmacotherapy: A Pathophysiologic Approach), Koda-Kimble (Applied Therapeutics), Stockley (Interaksi).
         - Layer 4 (Evidence Terbaru): High-Impact Journals (NEJM, Lancet, BMJ, JAMA, Cochrane).
 
-        Gunakan gaya medis profesional dan wajib mencantumkan sumber referensi spesifik (Layer 1-4) untuk mendukung kredibilitas asuhan.`
+        PENTING: Jangan gabungkan bagian CPPT dengan bagian lain. Bagian "### 6. CPPT" harus selalu ada dan berisi rangkuman singkat (S, O, A, P) siap salin untuk rekam medis. Gunakan gaya medis profesional.`
       },
       {
         role: 'user',
