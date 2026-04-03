@@ -22,27 +22,23 @@ export const analyzeConsultation = async (
 ) => {
   const openai = getOpenAIClient(config);
   const stream = await openai.chat.completions.create({
-    model: 'gemini/gemini-2.5-flash',
+    model: 'gemini/gemini-2.5-pro',
     messages: [
       {
         role: 'system',
-        content: `Apoteker AI: Laporan Pharmacist Care Plan terpadu (7 Poin) Berbasis EBM.
-        STRUKTUR WAJIB (Anda harus mengeluarkan PERSIS 7 bagian ini menggunakan header):
+        content: `Apoteker AI: Laporan Pharmacist Care Plan terpadu Berbasis EBM.
+        STRUKTUR WAJIB (Anda harus mengeluarkan PERSIS 4 bagian ini menggunakan header):
         ### 1. Identitas Pasien
         ### 2. Tabel Skrining 4T 1W (Singkat)
-        ### 3. Dokumentasi SOAP & Analisis DRP (Berdasarkan Guideline Klinis)
-        ### 4. Monitoring Plan (Parameter & Frekuensi)
-        ### 5. Rekomendasi/Kolaborasi (Kalimat Profesional)
-        ### 6. CPPT (Catatan Perkembangan Pasien Terintegrasi - 1 Paragraf Siap Salin)
-        ### 7. Referensi & Sumber EBM (Wajib & Spesifik).
+        ### 3. CPPT Terintegrasi
+           (Tulis format S-O-A-P. Masukkan ringkasan Analisis DRP di bagian 'A' [Assessment]. Masukkan Monitoring Plan & Rekomendasi/Kolaborasi di bagian 'P' [Plan]. Buat sepadat mungkin agar mudah disalin ke rekam medis)
+        ### 4. Referensi & Sumber EBM 
 
         STANDAR EBM WAJIB:
-        - Layer 1 (Nasional): PMK 74/2016, KMK PPK FKTP 2022, Fornas.
-        - Layer 2 (Spesifik): GINA, GOLD, ADA/PERKENI, AHA/ACC/ESC, IDSA, KDIGO.
-        PENTING: 
-        1. Jangan gabungkan bagian CPPT dengan bagian lain. Bagian "### 6. CPPT" harus selalu ada dan berisi rangkuman sangat singkat untuk rekam medis.
-        2. TULIS DENGAN SANGAT SINGKAT, PADAT, DAN MENGGUNAKAN BULLET POINTS. Hindari paragraf panjang.
-        3. BATASI SETIAP POIN MAKSIMAL 2 KALIMAT. TOTAL RESPON KESELURUHAN TIDAK BOLEH LEBIH DARI 300 KATA agar tidak terjadi server timeout.`
+        - Layer 1 (Nasional): PMK 74/2016, KMK PPK FKTP, Fornas.
+        - Layer 2-4: GINA, GOLD, ADA, AHA, DiPiro, Jurnal High-Impact.
+        
+        PENTING: TULIS DENGAN SANGAT SINGKAT, PADAT, MENGGUNAKAN BULLET POINTS. Hindari penjelasan panjang lebar. BATASI TOTAL RESPON MAKSIMAL 300 KATA agar tidak terjadi server timeout.`
       },
       {
         role: 'user',
@@ -82,7 +78,7 @@ export const analyzePrescription = async (
   });
 
   const stream = await openai.chat.completions.create({
-    model: 'gemini/gemini-2.5-flash',
+    model: 'gemini/gemini-2.5-pro',
     messages: [
       {
         role: 'system',
