@@ -14,7 +14,7 @@ const LandingPage: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/asuhan', { replace: true });
+      navigate('/mtm', { replace: true });
     }
   }, [user, navigate]);
 
@@ -74,7 +74,7 @@ const LandingPage: React.FC = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <button 
-                onClick={() => navigate('/asuhan')}
+                onClick={() => navigate('/mtm')}
                 className="bg-primary hover:bg-primary-container text-on-primary text-sm font-semibold px-6 py-2 rounded-xl transition-all hover:scale-105 hover:shadow-lg active:scale-95 shadow-md flex items-center gap-2"
               >
                 <span className="material-symbols-outlined text-sm">dashboard</span>

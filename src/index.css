@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
 
 :root {
   --primary: #0d9488;
@@ -28,6 +29,35 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --radius: 12px;
+}
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-fixed: var(--primary-fixed);
+  --color-on-primary-fixed: var(--on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--on-primary-fixed-variant);
+  --color-secondary: var(--secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-text: var(--text);
+  --color-text-light: var(--text-light);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-outline-variant: var(--outline-variant);
+  --color-border: var(--border);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow);
+  --radius-lg: var(--radius);
 }
 
 
@@ -137,24 +167,58 @@ body h4 { font-size: 1.25rem !important; line-height: 1.4; }
   background-color: var(--card);
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  justify-content: space-between;
+  justify-content: center; /* Center logo on mobile */
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.mobile-overlay {
+/* Bottom Navigation Bar */
+.bottom-nav {
   display: none;
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(2px);
-  z-index: 199;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--card);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* iPhone notch support */
 }
 
-.mobile-close-btn {
-  display: none;
+.bottom-nav-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 64px;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  flex: 1;
+  height: 100%;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.bottom-nav-item.active {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.bottom-nav-item:hover {
+  background-color: #0d948805;
 }
 
 /* Responsive adjustments */
@@ -163,6 +227,7 @@ body h4 { font-size: 1.25rem !important; line-height: 1.4; }
     grid-template-columns: 1fr;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
   }
 
   .mobile-header {
@@ -170,31 +235,15 @@ body h4 { font-size: 1.25rem !important; line-height: 1.4; }
   }
 
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: -280px; 
-    bottom: 0;
-    width: 280px;
-    z-index: 200;
-    display: flex;
-    transition: left 0.3s ease;
-    box-shadow: var(--shadow);
+    display: none; /* Hide sidebar completely on mobile */
   }
 
-  .sidebar.mobile-open {
-    left: 0;
-  }
-
-  .mobile-close-btn {
-    display: block !important;
-  }
-  
-  .mobile-overlay.active {
-    display: block;
+  .bottom-nav {
+    display: block; /* Show bottom nav on mobile */
   }
 
   .main-content {
-    padding: 1.5rem !important;
+    padding: 1rem 1rem 80px 1rem !important; /* Extra bottom padding for BottomNav */
   }
 }
 
@@ -479,23 +528,22 @@ button {
 }
 
 /* High-impact coloring for specific tags in blockquotes */
-.markdown-content blockquote:has(strong:contains("[KRITIS]")),
-.markdown-content blockquote:contains("[KRITIS]") {
+.markdown-content blockquote.kritis {
   border-left-color: var(--danger);
   background-color: #fef2f2;
 }
 
-.markdown-content blockquote:contains("[PERINGATAN]") {
+.markdown-content blockquote.peringatan {
   border-left-color: var(--warning);
   background-color: #fffbeb;
 }
 
-.markdown-content blockquote:contains("[INFO]") {
+.markdown-content blockquote.info {
   border-left-color: #3b82f6;
   background-color: #eff6ff;
 }
 
-.markdown-content blockquote:contains("[SARAN]") {
+.markdown-content blockquote.saran {
   border-left-color: var(--primary);
   background-color: #f0fdfa;
 }
@@ -615,6 +663,10 @@ button {
     display: block !important;
   }
   
+  .no-print {
+    display: none !important;
+  }
+  
   .main-content {
     padding: 0 !important;
     margin: 0 !important;
@@ -627,6 +679,19 @@ button {
     box-shadow: none !important;
     border: none !important;
     background-color: white !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    background-color: white !important;
+    color: black !important;
+    break-inside: avoid;
+  }
+  
+  .print-header,
+  .print-footer {
+    display: block !important;
   }
   
   .result-header h3 {
@@ -877,4 +942,27 @@ button {
 @keyframes rotateBg {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ─── Global Utility Animations (Sprint 1: moved from inline <style> in App.tsx) ─── */
+.history-list { max-width: 800px; margin: 0 auto; }
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.upload-card.listening {
+  border-color: var(--danger);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+  animation: pulse 1.5s infinite;
 }

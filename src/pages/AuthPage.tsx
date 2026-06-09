@@ -41,7 +41,7 @@ const AuthPage = () => {
                     password
                 });
                 if (error) throw error;
-                navigate('/asuhan');
+                navigate('/mtm');
             } else {
                 const { error: signUpError, data } = await supabase.auth.signUp({
                     email,
@@ -62,7 +62,7 @@ const AuthPage = () => {
                     setIsEmailSent(true);
                 } else {
                     // If email confirmation is disabled on the Supabase project
-                    navigate('/asuhan');
+                    navigate('/mtm');
                 }
             }
 
