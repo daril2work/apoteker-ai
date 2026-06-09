@@ -221,6 +221,38 @@ body h4 { font-size: 1.25rem !important; line-height: 1.4; }
   background-color: #0d948805;
 }
 
+/* Prominent Center Action Button (MTM) */
+.center-action {
+  position: relative;
+  top: -15px; /* Muncul ke atas sedikit */
+}
+
+.center-action-btn {
+  background: var(--primary);
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.4);
+  margin-bottom: 2px;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.center-action:hover .center-action-btn {
+  transform: scale(1.08);
+  background: var(--primary-dark);
+}
+
+.center-action span {
+  font-weight: 700;
+  color: var(--primary);
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .app-container {

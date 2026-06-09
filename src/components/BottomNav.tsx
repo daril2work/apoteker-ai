@@ -10,21 +10,23 @@ export const BottomNav: React.FC = () => {
     <nav className="bottom-nav">
       <div className="bottom-nav-inner">
         <NavLink
-          to="/mtm"
-          className={({ isActive }) => 
-            `bottom-nav-item ${isActive || location.pathname.startsWith('/mtm') ? 'active' : ''}`
-          }
-        >
-          <Plus size={24} />
-          <span>MTM</span>
-        </NavLink>
-        
-        <NavLink
           to="/pengaturan"
           className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
         >
           <Settings size={24} />
           <span>Pengaturan</span>
+        </NavLink>
+
+        <NavLink
+          to="/mtm"
+          className={({ isActive }) => 
+            `bottom-nav-item center-action ${isActive || location.pathname.startsWith('/mtm') ? 'active' : ''}`
+          }
+        >
+          <div className="center-action-btn">
+            <Plus size={28} color="white" />
+          </div>
+          <span>MTM</span>
         </NavLink>
 
         <button 
