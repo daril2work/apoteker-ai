@@ -16,6 +16,7 @@ import PatientsPage from './pages/dashboard/PatientsPage';
 import PatientProfilePage from './pages/dashboard/PatientProfilePage';
 import MTMSessionPage from './pages/dashboard/MTMSessionPage';
 import PengaturanPage from './pages/dashboard/PengaturanPage';
+import MigrationPage from './pages/dashboard/MigrationPage';
 
 declare global {
   interface Window {
@@ -132,6 +133,7 @@ function MainApp() {
             <Route path="mtm/pasien/:id" element={<PatientProfilePage />} />
             <Route path="mtm/sesi/:id" element={<MTMSessionPage onShowUpgradeModal={() => setShowUpgradeModal(true)} />} />
             <Route path="pengaturan" element={<PengaturanPage onShowUpgradeModal={() => setShowUpgradeModal(true)} />} />
+            <Route path="migrasi" element={<MigrationPage />} />
           </Routes>
         </div>
       </main>
