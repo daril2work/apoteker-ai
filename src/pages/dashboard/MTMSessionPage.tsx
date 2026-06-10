@@ -5,7 +5,7 @@ import { analyzeMTMSession } from '../../services/aiService';
 import { usePharmacyStore } from '../../store/usePharmacyStore';
 import MarkdownRenderer from '../../components/MarkdownRenderer';
 import { resizeImage } from '../../utils/imageUtils';
-import { ArrowLeft, Send, Loader2, Sparkles, FileText, CheckCircle, Copy, Printer, Camera, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Sparkles, FileText, CheckCircle, Copy, Printer, Camera, X } from 'lucide-react';
 
 interface MTMSessionPageProps {
   onShowUpgradeModal: () => void;
@@ -130,7 +130,7 @@ export default function MTMSessionPage({ onShowUpgradeModal }: MTMSessionPagePro
         sessionImages
       );
 
-      const { data, error } = await supabase.from('mtm_sessions').insert([{
+      const { error } = await supabase.from('mtm_sessions').insert([{
         user_id: user.id,
         patient_id: patient.id,
         clinical_data: clinicalData,

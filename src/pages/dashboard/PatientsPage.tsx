@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../services/supabase';
 import { usePharmacyStore } from '../../store/usePharmacyStore';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, User, Users, Activity, FileText } from 'lucide-react';
+import { Search, Plus, User, Users, Activity } from 'lucide-react';
 
 export default function PatientsPage() {
   const { user } = usePharmacyStore();
