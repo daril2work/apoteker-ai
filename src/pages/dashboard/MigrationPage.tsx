@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { supabase } from '../../services/supabase';
 import { usePharmacyStore } from '../../store/usePharmacyStore';
 import { Loader2, Database, CheckCircle, AlertTriangle } from 'lucide-react';
