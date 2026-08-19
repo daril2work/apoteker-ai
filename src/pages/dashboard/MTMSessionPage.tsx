@@ -5,7 +5,7 @@ import { analyzeMTMSession } from '../../services/aiService';
 import { usePharmacyStore } from '../../store/usePharmacyStore';
 import MarkdownRenderer from '../../components/MarkdownRenderer';
 import { resizeImage } from '../../utils/imageUtils';
-import { ArrowLeft, Loader2, Sparkles, FileText, CheckCircle, Copy, Printer, Camera, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Sparkles, FileText, CheckCircle, Copy, Printer, Camera, X, Edit2 } from 'lucide-react';
 
 interface MTMSessionPageProps {
   onShowUpgradeModal: () => void;
@@ -23,6 +23,7 @@ export default function MTMSessionPage({ onShowUpgradeModal }: MTMSessionPagePro
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [aiResultData, setAiResultData] = useState<any>(null);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(id === 'baru' ? null : id || null);
 
   // Form State
   const [clinicalData, setClinicalData] = useState({
@@ -92,6 +93,37 @@ export default function MTMSessionPage({ onShowUpgradeModal }: MTMSessionPagePro
     fetchContext();
   }, [id, patientId]);
 
+  // Load draft from localStorage on initial load if new session
+  useEffect(() => {
+    if (isNewSession && patientId) {
+      const draftKey = `mtm_draft_${patientId}`;
+      const draft = localStorage.getItem(draftKey);
+      if (draft) {
+        try {
+          const parsed = JSON.parse(draft);
+          if (parsed.clinicalData) setClinicalData(parsed.clinicalData);
+          if (parsed.medicationsData) setMedicationsData(parsed.medicationsData);
+        } catch(e) {
+          console.error("Failed to parse draft", e);
+        }
+      }
+    }
+  }, [isNewSession, patientId]);
+
+  // Save draft to localStorage whenever fields change
+  useEffect(() => {
+    if (isNewSession && patientId) {
+      const draftKey = `mtm_draft_${patientId}`;
+      // Only save if there's actually some data
+      if (clinicalData.subjective || clinicalData.objective || medicationsData.currentMedications || medicationsData.newPrescriptions) {
+        localStorage.setItem(draftKey, JSON.stringify({
+          clinicalData,
+          medicationsData
+        }));
+      }
+    }
+  }, [clinicalData, medicationsData, isNewSession, patientId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !patient) return;
@@ -130,17 +162,39 @@ export default function MTMSessionPage({ onShowUpgradeModal }: MTMSessionPagePro
         sessionImages
       );
 
-      const { error } = await supabase.from('mtm_sessions').insert([{
-        user_id: user.id,
-        patient_id: patient.id,
-        clinical_data: clinicalData,
-        medications_data: medicationsData,
-        mtr_result: { message: aiResult.mtr_result },
-        cppt_result: { message: aiResult.cppt_result },
-        map_result: { message: aiResult.map_result }
-      }]).select();
+      if (currentSessionId) {
+        // Update existing session
+        const { error } = await supabase.from('mtm_sessions').update({
+          clinical_data: clinicalData,
+          medications_data: medicationsData,
+          mtr_result: { message: aiResult.mtr_result },
+          cppt_result: { message: aiResult.cppt_result },
+          map_result: { message: aiResult.map_result }
+        }).eq('id', currentSessionId);
+        
+        if (error) throw error;
+      } else {
+        // Insert new session
+        const { data, error } = await supabase.from('mtm_sessions').insert([{
+          user_id: user.id,
+          patient_id: patient.id,
+          clinical_data: clinicalData,
+          medications_data: medicationsData,
+          mtr_result: { message: aiResult.mtr_result },
+          cppt_result: { message: aiResult.cppt_result },
+          map_result: { message: aiResult.map_result }
+        }]).select();
 
-      if (error) throw error;
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setCurrentSessionId(data[0].id);
+        }
+      }
+
+      // Clear draft on success
+      if (patientId) {
+        localStorage.removeItem(`mtm_draft_${patientId}`);
+      }
       
       alert('Sesi MTM Berhasil diproses oleh AI!');
       setAiResultData(aiResult);
@@ -307,6 +361,9 @@ export default function MTMSessionPage({ onShowUpgradeModal }: MTMSessionPagePro
               <CheckCircle size={24} /> Analisis Selesai
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button className="btn-outline" onClick={() => setAiResultData(null)} title="Perbaiki data klinis dan proses ulang">
+                <Edit2 size={18} /> Edit & Regenerasi
+              </button>
               <button className="btn-outline" onClick={() => {
                 const text = `MTR:\n${aiResultData.mtr_result}\n\nCPPT:\n${aiResultData.cppt_result}\n\nMAP:\n${aiResultData.map_result}`;
                 navigator.clipboard.writeText(text);

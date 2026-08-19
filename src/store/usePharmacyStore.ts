@@ -13,6 +13,7 @@ export interface ConsultationRecord {
     subjective: string;
     objective: string;
     result: string;
+    tokensUsed?: number;
 }
 
 export interface ScreeningRecord {
@@ -21,6 +22,7 @@ export interface ScreeningRecord {
     prescriptionText: string;
     image?: string;
     result: string;
+    tokensUsed?: number;
 }
 
 export interface PharmacyState {
@@ -29,6 +31,7 @@ export interface PharmacyState {
     apiKey: string;
     baseUrl: string;
     user: User | null;
+    role: 'user' | 'admin';
     tier: 'free' | 'pro';
     usageCountThisMonth: number;
     addConsultation: (record: ConsultationRecord) => Promise<void>;
@@ -37,6 +40,7 @@ export interface PharmacyState {
     deleteScreening: (id: string) => Promise<void>;
     setConfig: (config: { apiKey?: string; baseUrl?: string }) => void;
     setUser: (user: User | null) => void;
+    setRole: (role: 'user' | 'admin') => void;
     setTier: (tier: 'free' | 'pro') => void;
     loadUserData: () => Promise<void>;
 }
@@ -70,6 +74,21 @@ export const usePharmacyStore = create<PharmacyState>()(
                     set({ usageCountThisMonth: count });
                 }
 
+                // Get user role
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                
+                if (profile) {
+                    set({ role: profile.role as 'user' | 'admin' });
+                } else {
+                    // Try insert if doesn't exist yet
+                    await supabase.from('profiles').insert({ id: user.id, role: 'user' });
+                    set({ role: 'user' });
+                }
+
                 // Load documents
                 const { data: docs } = await supabase
                     .from('documents')
@@ -93,7 +112,7 @@ export const usePharmacyStore = create<PharmacyState>()(
             addConsultation: async (record) => {
                 const { user } = get();
                 if (user) {
-                    const { id, result, ...input_data } = record;
+                    const { id, result, tokensUsed, ...input_data } = record;
                     const { data } = await supabase.from('documents').insert({
                         user_id: user.id,
                         type: 'consultation',
@@ -103,7 +122,8 @@ export const usePharmacyStore = create<PharmacyState>()(
                     
                     await supabase.from('usage_logs').insert({
                         user_id: user.id,
-                        type: 'consultation'
+                        type: 'consultation',
+                        tokens_used: tokensUsed || 0
                     });
                     
                     const realId = data?.[0]?.id || id;
@@ -122,7 +142,7 @@ export const usePharmacyStore = create<PharmacyState>()(
             addScreening: async (record) => {
                 const { user } = get();
                 if (user) {
-                    const { id, result, ...input_data } = record;
+                    const { id, result, tokensUsed, ...input_data } = record;
                     const { data } = await supabase.from('documents').insert({
                         user_id: user.id,
                         type: 'screening',
@@ -132,7 +152,8 @@ export const usePharmacyStore = create<PharmacyState>()(
                     
                     await supabase.from('usage_logs').insert({
                         user_id: user.id,
-                        type: 'screening'
+                        type: 'screening',
+                        tokens_used: tokensUsed || 0
                     });
                     
                     const realId = data?.[0]?.id || id;
@@ -172,6 +193,7 @@ export const usePharmacyStore = create<PharmacyState>()(
                     ...config,
                 })),
             setUser: (user) => set({ user }),
+            setRole: (role) => set({ role }),
             setTier: (tier) => set({ tier }),
         }),
         {

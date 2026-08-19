@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { supabase } from '../services/supabase';
-import { Plus, Settings, LogOut } from 'lucide-react';
+import { Plus, Settings, LogOut, ScanSearch } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const location = useLocation();
@@ -27,6 +27,14 @@ export const BottomNav: React.FC = () => {
             <Plus size={28} color="white" />
           </div>
           <span>MTM</span>
+        </NavLink>
+
+        <NavLink
+          to="/skrining"
+          className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
+        >
+          <ScanSearch size={24} />
+          <span>Skrining</span>
         </NavLink>
 
         <button 

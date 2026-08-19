@@ -17,6 +17,9 @@ import PatientProfilePage from './pages/dashboard/PatientProfilePage';
 import MTMSessionPage from './pages/dashboard/MTMSessionPage';
 import PengaturanPage from './pages/dashboard/PengaturanPage';
 import MigrationPage from './pages/dashboard/MigrationPage';
+import SkriningPage from './pages/dashboard/SkriningPage';
+import AdminLayout from './pages/admin/AdminLayout';
+import AIAssistantWidget from './components/AIAssistantWidget';
 
 declare global {
   interface Window {
@@ -45,7 +48,9 @@ function MainApp() {
     } else if (path.includes('/mtm')) {
       setHeaderTitle('Daftar Pasien');
       setHeaderDesc('Kelola pasien dan mulai Medication Therapy Management.');
-      setHeaderDesc('Kelola pasien dan mulai Medication Therapy Management.');
+    } else if (path.includes('/skrining')) {
+      setHeaderTitle('Skrining Resep');
+      setHeaderDesc('Tangkap layar RME atau foto resep untuk analisis AI otomatis.');
     } else if (path.includes('/pengaturan')) {
       setHeaderTitle('Pengaturan');
       setHeaderDesc('Kelola preferensi aplikasi Anda.');
@@ -110,7 +115,7 @@ function MainApp() {
       <div className="mobile-header">
         <div className="logo">
           <ClipboardCheck size={28} />
-          <span>Apoteker AI</span>
+          <span>Farmasiku</span>
         </div>
       </div>
 
@@ -132,6 +137,7 @@ function MainApp() {
             <Route path="mtm" element={<PatientsPage />} />
             <Route path="mtm/pasien/:id" element={<PatientProfilePage />} />
             <Route path="mtm/sesi/:id" element={<MTMSessionPage onShowUpgradeModal={() => setShowUpgradeModal(true)} />} />
+            <Route path="skrining" element={<SkriningPage onShowUpgradeModal={() => setShowUpgradeModal(true)} />} />
             <Route path="pengaturan" element={<PengaturanPage onShowUpgradeModal={() => setShowUpgradeModal(true)} />} />
             <Route path="migrasi" element={<MigrationPage />} />
           </Routes>
@@ -153,7 +159,7 @@ function MainApp() {
 }
 
 export function AppWrapper() {
-  const { setUser, setTier } = usePharmacyStore();
+  const { user, setUser, setTier } = usePharmacyStore();
   const [sessionLoading, setSessionLoading] = useState(true);
 
   useEffect(() => {
@@ -210,12 +216,20 @@ export function AppWrapper() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/admin/*" element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        } />
         <Route path="/*" element={
           <ProtectedRoute>
             <MainApp />
           </ProtectedRoute>
         } />
       </Routes>
+      
+      {/* Show AI Assistant Widget globally when user is logged in */}
+      {user && <AIAssistantWidget />}
     </BrowserRouter>
   );
 }

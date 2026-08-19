@@ -90,7 +90,8 @@ export const analyzePrescription = async (
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `Server error ${response.status}`);
+    const errorMsg = errorData.detail ? `${errorData.error}: ${errorData.detail}` : errorData.error;
+    throw new Error(errorMsg || `Server error ${response.status}`);
   }
 
   const data = await response.json();
