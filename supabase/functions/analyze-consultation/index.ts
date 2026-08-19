@@ -70,7 +70,7 @@ serve(async (req) => {
     const apiKey = Deno.env.get('SUMOPOD_API_KEY') ?? '';
     const baseURL = Deno.env.get('SUMOPOD_BASE_URL') ?? 'https://ai.sumopod.com/v1';
 
-    const systemPrompt = `Apoteker AI: Laporan Pharmacist Care Plan terpadu Berbasis EBM.
+    const systemPrompt = `Farmasiku: Laporan Pharmacist Care Plan terpadu Berbasis EBM.
 STRUKTUR WAJIB (Anda harus mengeluarkan PERSIS 4 bagian ini menggunakan header):
 ### 1. Identitas Pasien
 ### 2. Tabel Skrining 4T 1W (Singkat)
@@ -123,7 +123,9 @@ PENTING: TULIS DENGAN SANGAT SINGKAT, PADAT, MENGGUNAKAN BULLET POINTS. Hindari 
       });
     }
 
-    return new Response(JSON.stringify({ result }), {
+    const tokens_used = aiData.usage?.total_tokens || 0;
+
+    return new Response(JSON.stringify({ result, tokens_used }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 

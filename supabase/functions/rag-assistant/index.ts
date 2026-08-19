@@ -46,10 +46,38 @@ serve(async (req) => {
       });
     }
 
-    const apiKey = Deno.env.get('SUMOPOD_API_KEY') ?? '';
+    const apiKey = Deno.env.get('SUMOPOD_API_KEY') ?? Deno.env.get('OPENAI_API_KEY') ?? '';
     const baseURL = Deno.env.get('SUMOPOD_BASE_URL') ?? 'https://api.sumopod.com/v1';
 
-    // 4. Generate Embedding for the query
+    // 2. Translate query to English to improve vector search on English documents
+    let searchQuery = query;
+    try {
+      const translateRes = await fetch(`${baseURL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: 'Translate the following medical query from Indonesian to English. Output only the translated English text, nothing else. For example, "hipertensi tanpa penyulit" -> "primary hypertension without comorbidities".' },
+            { role: 'user', content: query }
+          ],
+          temperature: 0.1,
+        }),
+      });
+      if (translateRes.ok) {
+        const transData = await translateRes.json();
+        if (transData.choices?.[0]?.message?.content) {
+          searchQuery = transData.choices[0].message.content.trim();
+        }
+      }
+    } catch (e) {
+      console.warn("Translation failed, falling back to original query", e);
+    }
+
+    // 3. Create embedding from the translated search query
     const embeddingResponse = await fetch(`${baseURL}/embeddings`, {
       method: 'POST',
       headers: {
@@ -57,8 +85,8 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'text-embedding-3-small', // Default model untuk text embedding
-        input: query,
+        model: 'text-embedding-3-small',
+        input: searchQuery,
       }),
     });
 
@@ -84,8 +112,8 @@ serve(async (req) => {
     // 5. Vector Search via RPC match_documents
     const { data: documents, error: matchError } = await supabaseClient.rpc('match_documents', {
       query_embedding: queryEmbedding,
-      match_threshold: 0.70, // Sesuaikan threshold similarity
-      match_count: 5,        // Ambil top 5 dokumen paling relevan
+      match_threshold: 0.50, // Turunkan threshold agar toleran terhadap pencarian lintas bahasa (Indo-Inggris)
+      match_count: 10,       // Ambil top 10 dokumen paling relevan untuk memperbanyak konteks
     });
 
     if (matchError) {
@@ -108,9 +136,11 @@ serve(async (req) => {
     }
 
     // 6. Augment Prompt & Call LLM for Completion
-    const systemPrompt = `Anda adalah Asisten Klinis Farmasiku yang cerdas untuk layanan Medication Therapy Management (MTM).
+    const systemPrompt = `Anda adalah Asisten Klinis Farmasiku yang cerdas.
 Tugas Anda adalah menjawab pertanyaan apoteker BERDASARKAN DOKUMEN REFERENSI berikut. 
 Jika dokumen referensi tidak memiliki informasi yang cukup untuk menjawab pertanyaan, nyatakan dengan jujur bahwa Anda tidak menemukan informasinya di pedoman, sebelum Anda memberikan jawaban umum berdasarkan pengetahuan medis Anda.
+
+PENTING: Dokumen referensi mungkin berbahasa Inggris, sementara pengguna bertanya dalam bahasa Indonesia. Harap maklumi terjemahan silang istilah medis (misal: "tanpa penyulit" = "without clinical CVD/comorbidities", "hipertensi" = "high blood pressure/hypertension"). Analisis dokumen referensi dengan cermat.
 
 REFERENSI DOKUMEN:
 ${contextText}
@@ -127,7 +157,7 @@ ATURAN MENJAWAB:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gemini/gemini-2.5-pro',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: query },

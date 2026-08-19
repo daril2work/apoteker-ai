@@ -119,16 +119,21 @@ serve(async (req) => {
     const patientAllergies = patientData?.allergies || 'Tidak ada catatan alergi';
     const patientChronicDiseases = patientData?.chronic_diseases || 'Tidak ada catatan penyakit kronis';
 
-    const systemPrompt = `Anda adalah Apoteker Klinis Ahli. Tugas Anda adalah melakukan Medication Therapy Management (MTM) berdasarkan data pasien.
+    const systemPrompt = `Anda adalah Apoteker Klinis Ahli. Tugas Anda adalah melakukan Medication Therapy Management (MTM) berdasarkan data pasien secara komprehensif dan akurat berbasis Evidence-Based Medicine (EBM).
 Anda HARUS mengembalikan respon dalam format JSON yang valid.
 Struktur JSON wajib memiliki 3 key berikut:
 {
-  "mtr_result": "String format markdown berisi hasil Medication Therapy Review (Skrining DRP, interaksi obat, kesesuaian dosis). Singkat dan padat.",
-  "cppt_result": "String format markdown berisi catatan SOAP formal untuk rekam medis puskesmas. Ringkas dan berbasis EBM.",
-  "map_result": "String format markdown berisi Medication-Related Action Plan. Ini adalah instruksi minum obat dan saran non-farmakologi dengan bahasa AWAM untuk pasien bawa pulang."
+  "mtr_result": "String format markdown berisi hasil Medication Therapy Review (MTR). Berikan analisis DRP (Drug-Related Problems), potensi interaksi obat, kesesuaian dosis, dan efektivitas terapi dengan DESKRIPSI PENJELASAN YANG MENDALAM. Jangan terlalu singkat.",
+  "cppt_result": "String format markdown berisi catatan SOAP formal untuk rekam medis puskesmas. Pada bagian 'A' (Assessment) sertakan ringkasan analisis DRP beserta penjelasan klinisnya, dan pada 'P' (Plan) sertakan Monitoring Plan & Rekomendasi/Kolaborasi.",
+  "map_result": "String format markdown berisi Medication-Related Action Plan. Ini adalah instruksi minum obat dan saran non-farmakologi dengan bahasa AWAM untuk pasien bawa pulang beserta alasan kenapa instruksi tersebut penting."
 }
 
-Standar EBM (Evidence Based Medicine): PMK 74/2016, JNC, GINA, ADA, DiPiro.
+STANDAR EBM WAJIB:
+- Layer 1 (Nasional): PMK 74/2016, KMK PPK FKTP, Fornas.
+- Layer 2 (Spesifik): GINA, GOLD, ADA/PERKENI, AHA/ACC/ESC, IDSA, KDIGO.
+- Layer 3 (Farmakoterapi): DiPiro (Pharmacotherapy: A Pathophysiologic Approach), Koda-Kimble (Applied Therapeutics), Stockley (Interaksi).
+- Layer 4 (Evidence Terbaru): High-Impact Journals (NEJM, Lancet, BMJ, JAMA, Cochrane).
+
 PASTIKAN HASILNYA ADALAH JSON VALID TANPA MARKDOWN BACKTICKS DI LUAR JSON.
 
 REFERENSI KLINIS TERKAIT (DARI DATABASE EBM/RAG LOKAL):
@@ -143,7 +148,9 @@ ANDA WAJIB MELAKUKAN CROSS-CHECK OBAT YANG DIRESEPKAN TERHADAP ALERGI DAN PENYAK
 Jika ditemukan potensi interaksi obat-penyakit (Drug-Disease Interaction) atau obat-alergi, BERIKAN PERINGATAN KERAS di dalam MTR dan CPPT.
 
 ATURAN TAMBAHAN BERKAITAN REFERENSI (SITASI): 
-Utamakan panduan dari REFERENSI KLINIS TERKAIT di atas untuk menyusun MTR dan CPPT. JIKA Anda menggunakan informasi dari Referensi Klinis tersebut, WAJIB cantumkan sitasi secara eksplisit dengan format cetak miring di akhir kalimat. Contoh: *(Sumber: Pedoman Hipertensi Hal 45)*.`;
+1. Jika Referensi Klinis Terkait (RAG Lokal) tidak memberikan informasi yang cukup, gunakan pengetahuan EBM (Layer 1-4) yang Anda miliki untuk memberikan analisis dan penjelasan yang lengkap.
+2. JIKA Anda menggunakan informasi dari Referensi Klinis (RAG Lokal), WAJIB cantumkan sitasi secara eksplisit dengan format cetak miring di akhir kalimat. Contoh: *(Sumber: Pedoman Hipertensi Hal 45)*.
+3. Selalu sebutkan sumber panduan/guideline yang mendasari analisis Anda di dalam penjelasan MTR dan CPPT.`;
 
     const userTextContent = `DATA PASIEN: ${JSON.stringify(patientData)}
 KLINIS SAAT INI (S & O): ${JSON.stringify(clinicalData)}
@@ -198,7 +205,9 @@ RIWAYAT SESI SEBELUMNYA: ${historyContext || 'Tidak ada'}`;
       });
     }
 
-    return new Response(JSON.stringify({ result }), {
+    const tokens_used = aiData.usage?.total_tokens || 0;
+
+    return new Response(JSON.stringify({ result, tokens_used }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
