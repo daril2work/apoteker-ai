@@ -174,7 +174,7 @@ RIWAYAT SESI SEBELUMNYA: ${historyContext || 'Tidak ada'}`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gemini/gemini-2.5-pro',
+        model: 'gpt-4o',
         response_format: { type: "json_object" },
         messages: [
           { role: 'system', content: systemPrompt },

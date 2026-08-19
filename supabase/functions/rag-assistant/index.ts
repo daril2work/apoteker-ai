@@ -157,7 +157,7 @@ ATURAN MENJAWAB:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gemini/gemini-2.5-pro',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: query },
